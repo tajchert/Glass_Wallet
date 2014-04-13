@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">EyeWallet</string>
+	<string name="start_eyewallet">transaction</string>
+	
+	<string name="service_voice_minus">minus this</string>
+	<string name="service_voice_add">add this</string>
+	
+	<string name="start_eyewallet_minus">minus this</string>
+	
+</resources>
