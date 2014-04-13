@@ -1,11 +1,8 @@
 package com.tajchert.glassware.eyewallet;
 
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.widget.RemoteViews;
 
 import com.google.android.glass.timeline.LiveCard;
 import com.google.android.glass.timeline.TimelineManager;
@@ -47,7 +44,7 @@ public class MinusService extends Service {
 		/*if(Tools.isNetworkAvailable(this)){
 			new UserLoginTask().execute();
 		}*/
-		Intent i = new Intent(this, MinusTransactionActivity.class);
+		Intent i = new Intent(this, BalanceActivity.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(i);
 		return START_STICKY;

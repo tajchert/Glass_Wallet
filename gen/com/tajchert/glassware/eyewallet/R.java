@@ -15,15 +15,16 @@ public final class R {
     }
     public static final class id {
         public static final int balance=0x7f070001;
-        public static final int balance_currency=0x7f070003;
-        public static final int balance_title=0x7f070002;
+        public static final int balance_currency=0x7f070002;
+        public static final int balance_title=0x7f070000;
         public static final int currency=0x7f070005;
         public static final int location=0x7f070006;
         public static final int text=0x7f070004;
-        public static final int top=0x7f070000;
+        public static final int top=0x7f070003;
     }
     public static final class layout {
-        public static final int transaction_add=0x7f030000;
+        public static final int balance_check=0x7f030000;
+        public static final int transaction_add=0x7f030001;
     }
     public static final class string {
         public static final int app_name=0x7f050000;
