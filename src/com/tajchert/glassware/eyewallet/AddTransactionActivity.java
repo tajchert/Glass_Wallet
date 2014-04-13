@@ -77,8 +77,7 @@ public class AddTransactionActivity extends Activity implements
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.transaction_add);
 
-		prefs = this.getSharedPreferences("com.tajchert.glassware.eyewallet",
-				Context.MODE_PRIVATE);
+		prefs = this.getSharedPreferences("com.tajchert.glassware.eyewallet",Context.MODE_PRIVATE);
 		text = (TextView) findViewById(R.id.text);
 		mBalance = (TextView) findViewById(R.id.balance);
 
@@ -144,6 +143,9 @@ public class AddTransactionActivity extends Activity implements
 		if (newPaymentVal > 0) {
 			text.setText("+" + newPaymentVal + " ");
 			text.setTextColor(Color.GREEN);
+		} else if (newPaymentVal == 0) {
+			text.setText("+" + newPaymentVal + " ");
+			text.setTextColor(Color.WHITE);
 		} else {
 			text.setText(newPaymentVal + " ");
 			text.setTextColor(Color.RED);
@@ -152,41 +154,38 @@ public class AddTransactionActivity extends Activity implements
 
 	private class SaveAndExit extends AsyncTask<String, Void, String> {
 		private Card cardOperation;
+		private int payment;
 
 		@Override
-        protected String doInBackground(String... params) {
-        	payments.add(params[0]);
-        	setSharedSet(payments);
-        	
-        	
-        	int payment = Integer.parseInt(params[0]);
-        	
-        	Calendar cal = Calendar.getInstance();
-        	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
-        	
-        	cardOperation = new Card(AddTransactionActivity.this);
-        	cardOperation.setImageLayout(Card.ImageLayout.FULL);
-        	if(payment >= 0){
-        		cardOperation.setText("Income: "+ Math.abs(payment)+ CURRENCY);
-        		cardOperation.addImage(R.drawable.income_full);
-        	}else if(payment < 0){
-        		cardOperation.setText("Outcome: "+ Math.abs(payment)+ CURRENCY);
-        		cardOperation.addImage(R.drawable.outcome_full);
-        	}
-        	cardOperation.setFootnote("" + sdf.format(cal.getTime()));
-        	
-        	//TODO
-    		//card1.addImage(R.drawable.logo_pjwstk_red);
-        	
-            return "Executed";
-        }
+		protected String doInBackground(String... params) {
+			payments.add(params[0]);
+			setSharedSet(payments);
+
+			payment = Integer.parseInt(params[0]);
+
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm",java.util.Locale.getDefault());
+
+			cardOperation = new Card(AddTransactionActivity.this);
+			cardOperation.setImageLayout(Card.ImageLayout.FULL);
+			if (payment > 0) {
+				cardOperation.setText("Income: " + Math.abs(payment) + CURRENCY);
+				cardOperation.addImage(R.drawable.income_full);
+			} else if (payment < 0) {
+				cardOperation.setText("Outcome: " + Math.abs(payment)+ CURRENCY);
+				cardOperation.addImage(R.drawable.outcome_full);
+			}
+			cardOperation.setFootnote("" + sdf.format(cal.getTime()));
+			return "Executed";
+		}
 
 		@Override
 		protected void onPostExecute(String result) {
-
+			if (payment != 0) {
+				TimelineManager tm = TimelineManager.from(AddTransactionActivity.this);
+				tm.insert(cardOperation);
+			}
 			AddTransactionActivity.this.finish();
-			TimelineManager tm = TimelineManager.from(AddTransactionActivity.this);
-			tm.insert(cardOperation);
 		}
 
 		@Override
