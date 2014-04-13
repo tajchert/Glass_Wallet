@@ -1,23 +1,14 @@
 package com.tajchert.glassware.eyewallet;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
@@ -35,20 +26,6 @@ public class BalanceActivity extends Activity{
 	
 	
 	private SharedPreferences prefs;
-
-	/*private static void removeBackgrounds(final View aView) {
-		aView.setBackgroundDrawable(null);
-		aView.setBackgroundColor(Color.TRANSPARENT);
-		aView.setBackgroundResource(0);
-		if (aView instanceof ViewGroup) {
-			final ViewGroup group = (ViewGroup) aView;
-			final int childCount = group.getChildCount();
-			for (int i = 0; i < childCount; i++) {
-				final View child = group.getChildAt(i);
-				removeBackgrounds(child);
-			}
-		}
-	}*/
 	
 	private Set<String> getSharedSet(){
 		Set<String> set = prefs.getStringSet(PREFS_SET, null);

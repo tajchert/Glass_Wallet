@@ -50,15 +50,6 @@ public class AddTransactionActivity extends Activity implements
 
 	private SharedPreferences prefs;
 
-	/*
-	 * private static void removeBackgrounds(final View aView) {
-	 * aView.setBackgroundDrawable(null);
-	 * aView.setBackgroundColor(Color.TRANSPARENT);
-	 * aView.setBackgroundResource(0); if (aView instanceof ViewGroup) { final
-	 * ViewGroup group = (ViewGroup) aView; final int childCount =
-	 * group.getChildCount(); for (int i = 0; i < childCount; i++) { final View
-	 * child = group.getChildAt(i); removeBackgrounds(child); } } }
-	 */
 	@Override
 	public boolean onKeyDown(int keycode, KeyEvent event) {
 		if (keycode == KeyEvent.KEYCODE_DPAD_CENTER) {
@@ -171,18 +162,20 @@ public class AddTransactionActivity extends Activity implements
         	int payment = Integer.parseInt(params[0]);
         	
         	Calendar cal = Calendar.getInstance();
-        	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
         	
         	cardOperation = new Card(AddTransactionActivity.this);
+        	cardOperation.setImageLayout(Card.ImageLayout.FULL);
         	if(payment >= 0){
         		cardOperation.setText("Income: "+ Math.abs(payment)+ CURRENCY);
+        		cardOperation.addImage(R.drawable.income_full);
         	}else if(payment < 0){
         		cardOperation.setText("Outcome: "+ Math.abs(payment)+ CURRENCY);
+        		cardOperation.addImage(R.drawable.outcome_full);
         	}
         	cardOperation.setFootnote("" + sdf.format(cal.getTime()));
         	
         	//TODO
-        	//cardOperation.setImageLayout(Card.ImageLayout.LEFT);
     		//card1.addImage(R.drawable.logo_pjwstk_red);
         	
             return "Executed";
