@@ -1,30 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity"
     android:background="#000"
-     >
-     
-
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+    
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/top">
+    
     <TextView
-        android:id="@+id/text"
+            android:id="@+id/balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/balance_title"
+            android:textColor="#FFF"
+            android:gravity="bottom"
+            android:textSize="40sp" />
+    <TextView
+            android:id="@+id/balance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Balance: "
+            android:gravity="bottom"
+            android:layout_alignBottom="@+id/balance"
+            android:layout_alignTop="@+id/balance"
+            android:textColor="#FFF"
+            android:textSize="25sp" />
+    <TextView
+            android:id="@+id/balance_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:layout_toRightOf="@+id/balance"
+            android:layout_alignBottom="@+id/balance"
+            android:layout_alignTop="@+id/balance"
+            android:textColor="#FFF"
+            android:text=" PLN"
+            android:textSize="25sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_below="@+id/top"
         android:layout_gravity="center"
-        android:textColor="#FFF"
-        android:textSize="65sp"
-        />
-    
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#FFF"
+            android:textSize="65sp" />
+
+        <TextView
+            android:id="@+id/currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center|bottom"
+            android:layout_toRightOf="@+id/text"
+            android:layout_alignBottom="@+id/text"
+            android:layout_alignTop="@+id/text"
+            android:textColor="#FFF"
+            android:text="PLN"
+            android:textSize="40sp" />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFF"
-        android:textSize="28sp"
-        />
+        android:textSize="28sp" />
 
-</LinearLayout>
+</RelativeLayout>
