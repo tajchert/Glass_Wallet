@@ -1,7 +1,8 @@
 package com.tajchert.glassware.eyewallet;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import android.app.Activity;
@@ -12,9 +13,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -23,20 +22,24 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
+import com.google.android.glass.app.Card;
+import com.google.android.glass.timeline.TimelineManager;
+
 public class AddTransactionActivity extends Activity implements
-		SensorEventListener, LocationListener {
+		SensorEventListener {
 
 	private static final String LOG_TAG = "SensorTest";
 	private static final String PREFS_SET = "payments_set";
+	private static final String CURRENCY = " PLN";
 	private TextView text;
 	private TextView mBalance;
 	private SensorManager mSensorManager;
 	private Sensor mOrientation;
 	private boolean firstRun = true;
-	
+
 	private Set<String> payments;
 	private Integer balance = 0;
-	
+
 	private int startPitch = 80;
 	private int maxPaymentVal = 100;
 	private int newPaymentVal = 0;
@@ -44,40 +47,34 @@ public class AddTransactionActivity extends Activity implements
 	Float azimuth_angle;
 	Float pitch_angle;
 	Float roll_angle;
-	
+
 	private SharedPreferences prefs;
 
-	/*private static void removeBackgrounds(final View aView) {
-		aView.setBackgroundDrawable(null);
-		aView.setBackgroundColor(Color.TRANSPARENT);
-		aView.setBackgroundResource(0);
-		if (aView instanceof ViewGroup) {
-			final ViewGroup group = (ViewGroup) aView;
-			final int childCount = group.getChildCount();
-			for (int i = 0; i < childCount; i++) {
-				final View child = group.getChildAt(i);
-				removeBackgrounds(child);
-			}
-		}
-	}*/
+	/*
+	 * private static void removeBackgrounds(final View aView) {
+	 * aView.setBackgroundDrawable(null);
+	 * aView.setBackgroundColor(Color.TRANSPARENT);
+	 * aView.setBackgroundResource(0); if (aView instanceof ViewGroup) { final
+	 * ViewGroup group = (ViewGroup) aView; final int childCount =
+	 * group.getChildCount(); for (int i = 0; i < childCount; i++) { final View
+	 * child = group.getChildAt(i); removeBackgrounds(child); } } }
+	 */
 	@Override
-    public boolean onKeyDown(int keycode, KeyEvent event) {
-        if (keycode == KeyEvent.KEYCODE_DPAD_CENTER) {
-        	Log.i(LOG_TAG, "KEYCODE_DPAD_CENTER");
-        	payments.add(newPaymentVal+"");
-        	setSharedSet(payments);
-        	this.finish();
-            return true;
-        }
-        return false;
-    }
-	
-	private Set<String> getSharedSet(){
+	public boolean onKeyDown(int keycode, KeyEvent event) {
+		if (keycode == KeyEvent.KEYCODE_DPAD_CENTER) {
+			Log.i(LOG_TAG, "KEYCODE_DPAD_CENTER");
+			new SaveAndExit().execute(newPaymentVal + "");
+			return true;
+		}
+		return false;
+	}
+
+	private Set<String> getSharedSet() {
 		Set<String> set = prefs.getStringSet(PREFS_SET, null);
 		return set;
 	}
-	
-	private void setSharedSet(Set<String> in){
+
+	private void setSharedSet(Set<String> in) {
 		prefs.edit().putStringSet(PREFS_SET, in).commit();
 	}
 
@@ -88,24 +85,15 @@ public class AddTransactionActivity extends Activity implements
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.transaction_add);
-		
-		prefs = this.getSharedPreferences("com.tajchert.glassware.eyewallet", Context.MODE_PRIVATE);
+
+		prefs = this.getSharedPreferences("com.tajchert.glassware.eyewallet",
+				Context.MODE_PRIVATE);
 		text = (TextView) findViewById(R.id.text);
 		mBalance = (TextView) findViewById(R.id.balance);
 
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		/*List<Sensor> sensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
-		for (Sensor sensor : sensors) {
-			Log.i(LOG_TAG, "Found sensor: " + sensor.getName());
-		}*/
 
 		mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-
-		LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		List<String> providers = mLocationManager.getAllProviders();
-		for (String provider : providers) {
-			Log.i(LOG_TAG, "Found provider: " + provider);
-		}
 	}
 
 	@Override
@@ -115,9 +103,10 @@ public class AddTransactionActivity extends Activity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mSensorManager.registerListener(this, mOrientation, SensorManager.SENSOR_DELAY_UI);
+		mSensorManager.registerListener(this, mOrientation,
+				SensorManager.SENSOR_DELAY_UI);
 		payments = getSharedSet();
-		if(payments == null){
+		if (payments == null) {
 			payments = new HashSet<String>();
 		}
 		for (String pay : payments) {
@@ -127,16 +116,16 @@ public class AddTransactionActivity extends Activity implements
 		Log.i(LOG_TAG, "Balance: " + balance);
 		setTextBalance();
 	}
-	
-	private void setTextBalance(){
-		if(firstRun == true && mBalance != null){
+
+	private void setTextBalance() {
+		if (firstRun == true && mBalance != null) {
 			Log.i(LOG_TAG, "A");
-			if(balance != null){
+			if (balance != null) {
 				Log.i(LOG_TAG, "B");
 				mBalance.setText(balance + "");
-				if(balance >= 0){
+				if (balance >= 0) {
 					mBalance.setTextColor(Color.GREEN);
-				}else{
+				} else {
 					mBalance.setTextColor(Color.RED);
 				}
 				firstRun = false;
@@ -152,43 +141,67 @@ public class AddTransactionActivity extends Activity implements
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		//float azimuth_angle = event.values[0];
+		// float azimuth_angle = event.values[0];
 		float pitch_angle = event.values[1];
-		//float roll_angle = event.values[2];
-		
-		// Do something with these orientation angles.
-		//text.setText("azimuth, pitch, roll, lat, lon:\n" + azimuth_angle + "\n"+ pitch_angle + "\n" + roll_angle);
-		//Log.d(LOG_TAG, "azimuth, pitch, roll, lat, lon:\n" + azimuth_angle + "\n"+ pitch_angle + "\n" + roll_angle);
-		int val = (int) (Math.abs(pitch_angle)-startPitch);
-		newPaymentVal = (val*maxPaymentVal/90);
-		//int newVal = (int) Math.round((startValue * (val * val)));
-		
-		if(newPaymentVal>0){
-			text.setText("+"+newPaymentVal +" ");
+		// float roll_angle = event.values[2];
+
+		// Log.d(LOG_TAG, "azimuth, pitch, roll, lat, lon:\n" + azimuth_angle +
+		// "\n"+ pitch_angle + "\n" + roll_angle);
+		int val = (int) (Math.abs(pitch_angle) - startPitch);
+		newPaymentVal = (val * maxPaymentVal / 90);
+
+		if (newPaymentVal > 0) {
+			text.setText("+" + newPaymentVal + " ");
 			text.setTextColor(Color.GREEN);
-		}else{
-			text.setText(newPaymentVal +" ");
+		} else {
+			text.setText(newPaymentVal + " ");
 			text.setTextColor(Color.RED);
 		}
-		
-		
 	}
 
-	@Override
-	public void onLocationChanged(Location location) {
-	}
+	private class SaveAndExit extends AsyncTask<String, Void, String> {
+		private Card cardOperation;
 
-	@Override
-	public void onProviderDisabled(String provider) {
-	}
+		@Override
+        protected String doInBackground(String... params) {
+        	payments.add(params[0]);
+        	setSharedSet(payments);
+        	
+        	
+        	int payment = Integer.parseInt(params[0]);
+        	
+        	Calendar cal = Calendar.getInstance();
+        	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        	
+        	cardOperation = new Card(AddTransactionActivity.this);
+        	if(payment >= 0){
+        		cardOperation.setText("Income: "+ Math.abs(payment)+ CURRENCY);
+        	}else if(payment < 0){
+        		cardOperation.setText("Outcome: "+ Math.abs(payment)+ CURRENCY);
+        	}
+        	cardOperation.setFootnote("" + sdf.format(cal.getTime()));
+        	
+        	//TODO
+        	//cardOperation.setImageLayout(Card.ImageLayout.LEFT);
+    		//card1.addImage(R.drawable.logo_pjwstk_red);
+        	
+            return "Executed";
+        }
 
-	@Override
-	public void onProviderEnabled(String provider) {
-	}
+		@Override
+		protected void onPostExecute(String result) {
 
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
+			AddTransactionActivity.this.finish();
+			TimelineManager tm = TimelineManager.from(AddTransactionActivity.this);
+			tm.insert(cardOperation);
+		}
+
+		@Override
+		protected void onPreExecute() {
+		}
+
+		@Override
+		protected void onProgressUpdate(Void... values) {
+		}
 	}
-	
 }
-

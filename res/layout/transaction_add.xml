@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:textColor="#FFF"
             android:textStyle="bold"
+            android:text="0"
             android:textSize="25sp" />
     
     <TextView
@@ -50,6 +51,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="#FFF"
+            android:text="0"
             android:textSize="65sp" />
 
         <TextView
@@ -59,6 +61,7 @@
             android:gravity="center|bottom"
             android:layout_toRightOf="@+id/text"
             android:layout_alignBottom="@+id/text"
+            android:layout_marginBottom="6dp"
             android:layout_alignTop="@+id/text"
             android:textColor="#FFF"
             android:text="PLN"
