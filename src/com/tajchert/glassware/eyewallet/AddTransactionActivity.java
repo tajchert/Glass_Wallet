@@ -23,7 +23,6 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
 import com.google.android.glass.app.Card;
-import com.google.android.glass.timeline.TimelineManager;
 
 public class AddTransactionActivity extends Activity implements
 		SensorEventListener {
@@ -182,8 +181,10 @@ public class AddTransactionActivity extends Activity implements
 		@Override
 		protected void onPostExecute(String result) {
 			if (payment != 0) {
-				TimelineManager tm = TimelineManager.from(AddTransactionActivity.this);
-				tm.insert(cardOperation);
+				//TimelineManager tm = TimelineManager.from(AddTransactionActivity.this);
+				//cardOperation.
+				//tm.insert(cardOperation);
+				//TODO when adding to timeline will be available
 			}
 			AddTransactionActivity.this.finish();
 		}

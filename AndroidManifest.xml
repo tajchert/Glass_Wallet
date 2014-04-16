@@ -6,10 +6,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+	<uses-permission android:name="com.google.android.glass.permission.DEVELOPMENT" />
 
     <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="15" />
+        android:minSdkVersion="19"
+        android:targetSdkVersion="19" />
 	
     <application
         android:allowBackup="true"
@@ -27,7 +28,6 @@
             android:icon="@drawable/ic_launcher"
             android:label="@string/service_voice_add" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
                 <action android:name="com.google.android.glass.action.VOICE_TRIGGER" android:resource="@xml/voice_trigger_start"/>
             </intent-filter>
 			
