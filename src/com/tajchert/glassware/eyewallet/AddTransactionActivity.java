@@ -60,7 +60,7 @@ public class AddTransactionActivity extends Activity implements
 	}
 
 	private Set<String> getSharedSet() {
-		Set<String> set = prefs.getStringSet(PREFS_SET, null);
+		Set<String> set = new HashSet<String>(prefs.getStringSet(PREFS_SET, new HashSet<String>()));
 		return set;
 	}
 
